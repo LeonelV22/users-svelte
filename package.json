@@ -1,0 +1,37 @@
+{
+  "name": "svelte-app",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "start": "sirv public --single",
+    "backend": "json-server --watch config/db.json --routes config/routes.json --port 5001 --middlewares ./node_modules/json-server-reset",
+    "servers": "concurrently \"npm run backend\" \"npm run dev\"",
+    "cypress:open": "cypress open"
+  },
+  "devDependencies": {
+    "@rollup/plugin-alias": "^3.0.1",
+    "@rollup/plugin-commonjs": "^11.0.0",
+    "@rollup/plugin-node-resolve": "^7.0.0",
+    "autoprefixer": "^9.7.4",
+    "concurrently": "^4.0.1",
+    "json-server": "^0.15.1",
+    "json-server-reset": "^1.0.0",
+    "rollup": "^1.20.0",
+    "rollup-plugin-livereload": "^1.0.0",
+    "rollup-plugin-postcss": "^2.1.1",
+    "rollup-plugin-serve": "^1.0.1",
+    "rollup-plugin-svelte": "^5.0.3",
+    "rollup-plugin-terser": "^5.1.2",
+    "sass": "^1.26.1",
+    "svelte": "^3.0.0",
+    "svelte-preprocess": "^3.4.0",
+    "cypress": "^4.0.2"
+  },
+  "dependencies": {
+    "bulma": "^0.8.0",
+    "node-sass": "^4.13.1",
+    "sirv-cli": "^0.4.4",
+    "svelte-routing": "^1.4.0"
+  }
+}

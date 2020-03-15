@@ -1,78 +1,78 @@
-import {derived, writable} from 'svelte/store/index';
-import config from '../../config'
+import { derived, writable } from 'svelte/store/index';
+import config from '../../config';
 import { countries } from './countries';
 
-let users = writable([]);
-let userSelected = writable({});
-let pagination = writable({
+const users = writable([]);
+const userSelected = writable({});
+const pagination = writable({
   currentPage: 1,
   lastPage: null,
   totalCount: null,
 });
-let userCache = {};
+const userCache = {};
 
 const getUsers = async (page = 1, force = false) => {
-
   if (!userCache[page] || force) {
-    let response = await fetch(`${config.api}/users?_page=${page}`)
-    let text = await response.text();
+    const response = await fetch(`${config.api}/users?_page=${page}`);
+    const text = await response.text();
 
     if (response.ok) {
       userCache[page] = JSON.parse(text);
 
-      pagination.update(oldPagination => {
+      pagination.update((oldPagination) => {
         const linkHeader = response.headers.get('Link').split(',');
         const { length, [length - 1]: last } = linkHeader;
         const lastPage = Number(last.match('_page=([0-9]+)>')[1]);
 
-        return { ...oldPagination, currentPage: page, lastPage, totalCount: response.headers.get('X-Total-Count')}
+        return {
+          ...oldPagination, currentPage: page, lastPage, totalCount: response.headers.get('X-Total-Count'),
+        };
       });
     } else {
-      throw new Error(text)
+      throw new Error(text);
     }
   }
 
   users.update(() => userCache[page]);
-  pagination.update(oldPagination => ({ ...oldPagination, currentPage: page }))
+  pagination.update((oldPagination) => ({ ...oldPagination, currentPage: page }));
 
   return userCache[page];
-}
+};
 
 const userCountry = derived(userSelected,
-    async ($userSelected, set) => {
-      if($userSelected.id) {
-        const newVar = await countries.get($userSelected.country_id);
-        return set(newVar);
-      }
+  async ($userSelected, set) => {
+    if ($userSelected.id) {
+      const newVar = await countries.get($userSelected.country_id);
+      return set(newVar);
+    }
 
-      return Promise.resolve({})
-    },
-)
+    return Promise.resolve({});
+  });
 
 const updateUser = async (user) => {
   userSelected.update(() => ({
-      ...user,
-      isUpdating: true
+    ...user,
+    isUpdating: true,
   }));
 
   const response = await fetch(`${config.api}/users/${user.id}`, {
     method: 'PUT',
     body: JSON.stringify(user),
     headers: {
-      'Content-Type': 'application/json'
-    }
+      'Content-Type': 'application/json',
+    },
   });
 
   if (!response.ok) {
-    throw new Error(await response.text())
+    throw new Error(await response.text());
   }
 
   await getUsers(pagination.currentPage, true);
 
   userSelected.update(() => ({
     ...user,
-    isUpdating: false
-  }))
+    isUpdating: false,
+  }));
 };
 
 export {
@@ -82,4 +82,4 @@ export {
   pagination,
   getUsers,
   updateUser,
-}
+};

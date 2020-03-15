@@ -7,7 +7,9 @@
     "start": "sirv public --single",
     "backend": "json-server --watch config/db.json --routes config/routes.json --port 5001 --middlewares ./node_modules/json-server-reset",
     "servers": "concurrently \"npm run backend\" \"npm run dev\"",
-    "cypress:open": "cypress open"
+    "cypress:open": "cypress open",
+    "eslint": "eslint src/**/*.js",
+    "eslint:fix": "eslint src/**/*.js --fix"
   },
   "devDependencies": {
     "@rollup/plugin-alias": "^3.0.1",

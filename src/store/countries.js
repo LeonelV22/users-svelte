@@ -1,17 +1,30 @@
-import config from '../../config'
+import config from '../../config';
 
-const countries = (() => {
-  let countries = {}
+export const getCountry = async (countryId) => {
+  const response = await fetch(`${config.api}/countries/${countryId}`);
+  const text = await response.text();
+
+  if (response.ok) {
+    const country = JSON.parse(text);
+    countries[country.id] = country; // eslint-disable-line no-use-before-define
+
+    return country;
+  }
+  return null;
+};
+
+export const countries = (() => {
+  let countriesCache = {};
 
   return {
     get: async (countryId) => {
-      const find = countries[countryId];
-      if(find){
+      const find = countriesCache[countryId];
+      if (find) {
         return Promise.resolve(find);
       }
 
       const country = await getCountry(countryId);
-      countries[countryId] = country;
+      countriesCache[countryId] = country;
 
       return country;
     },
@@ -21,29 +34,12 @@ const countries = (() => {
       const text = await response.text();
 
       if (response.ok) {
-        countries =  JSON.parse(text)
-              .reduce((acc, c) => ({ ...acc, [c.id]: c}), {});
+        countriesCache = JSON.parse(text)
+          .reduce((acc, c) => ({ ...acc, [c.id]: c }), {});
 
-        return countries;
+        return countriesCache;
       }
       return null;
-    }
-  }
+    },
+  };
 })();
-
-const getCountry = async (countryId) => {
-  const response = await fetch(`${config.api}/countries/${countryId}`);
-  const text = await response.text();
-
-  if (response.ok) {
-    const country = JSON.parse(text);
-    countries[country.id] = country;
-
-    return country
-  }
-  return null
-};
-
-export {
-  countries,
-}

@@ -19,11 +19,13 @@
                 </tr>
                 </thead>
                 <tbody>
-                    {#each Object.values(_countries) as country}
-                        <tr>
-                            <td>{country.id}</td>
-                            <td>{country.name}</td>
-                        </tr>
+                    {#each Object.values(_countries) as { id, name }, i }
+                        {#if i < 10}
+                            <tr>
+                                <td>{id}</td>
+                                <td>{name}</td>
+                            </tr>
+                        {/if}
                     {/each}
                 </tbody>
             </table>

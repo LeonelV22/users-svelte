@@ -19,6 +19,10 @@
         }
     }
 
+    .table tr.is-selected.is-updating {
+        background-color: #cccccc;
+        color: #b3b3b3;
+    }
 </style>
 
 <table class="table is-hoverable is-bordered is-clickable">
@@ -31,7 +35,10 @@
     </thead>
     <tbody>
         {#each $users as user}
-        <tr on:click="{() => handleClick(user)}">
+        <tr on:click="{() => handleClick(user)}"
+            class:is-selected="{user.id === $userSelected.id}"
+            class:is-updating="{user.id === $userSelected.id && $userSelected.isUpdating}"
+        >
             <td>{user.id}</td>
             <td>{user.name}</td>
             <td>{user.company}</td>

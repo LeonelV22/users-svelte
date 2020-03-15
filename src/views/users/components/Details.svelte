@@ -1,6 +1,29 @@
 <script>
-    import { userSelected, userCountry } from '../../../store'
+    import { userSelected, userCountry, updateUser } from '../../../store'
     import { Info } from '../../../components';
+
+    let name = '';
+    let company = '';
+
+    $: setUser($userSelected)
+
+    function setUser(userSelected) {
+        name = userSelected.name;
+        company = userSelected.company;
+    }
+
+    function resetUser() {
+        setUser($userSelected)
+    }
+
+    function handleSaveUser() {
+        updateUser({
+            ...$userSelected,
+            name,
+            company
+        })
+    }
+
 </script>
 
 {#if !$userSelected.id}
@@ -14,7 +37,7 @@
         <div class="field-body">
             <div class="field">
                 <div class="control">
-                    <input class="input" value="{$userSelected.name}" >
+                    <input class="input" bind:value="{name}" >
                 </div>
             </div>
         </div>
@@ -26,7 +49,7 @@
         <div class="field-body">
             <div class="field">
                 <div class="control">
-                    <input class="input" value="{$userSelected.company}" >
+                    <input class="input" bind:value="{company}" >
                 </div>
             </div>
         </div>
@@ -34,4 +57,8 @@
     {#if $userCountry}
         <pre>Country {$userCountry.code}</pre>
     {/if}
+    <div class="buttons are-small">
+        <button class="button" on:click={handleSaveUser}>Save</button>
+        <button class="button" on:click={resetUser}>Reset</button>
+    </div>
 {/if}

@@ -6,4 +6,4 @@ export {
   NavBar,
   Error,
   Info,
-}
+};
